@@ -9,18 +9,29 @@ interface SocketFn {
 } 
 type SocketArgs = ["connect", SocketFn] | ["disconnect", SocketFn] | ["data", SocketDataFn] | ["error", SocketErrorFn];
 
-interface SocketFns {
-  on(event: "connect", handler: () => void): void;
-  on(event: "disconnect", handler: () => void): void;
-  on(event: "data", handler: (data: string) => void): void;
-  on(event: "error", handler: (error: Error) => void): void;
-}
-
-export class Socket implements SocketFns {
+export interface ISocket {
   connectHandler?: SocketFn;
   disconnectHandler?: SocketFn;
   dataHandler?: SocketDataFn;
   errorHandler?: SocketErrorFn;
+  host: string;
+  port: number;
+  on(event: "connect", handler: SocketFn): void;
+  on(event: "disconnect", handler: SocketFn): void;
+  on(event: "data", handler: SocketDataFn): void;
+  on(event: "error", handler: SocketErrorFn): void;
+  connect(): void;
+  disconnect(): void;
+}
+
+
+export class Socketable implements ISocket {
+  connectHandler?: SocketFn;
+  disconnectHandler?: SocketFn;
+  dataHandler?: SocketDataFn;
+  errorHandler?: SocketErrorFn;
+  host = "";
+  port = 6667;
 
   on(event: "connect", handler: SocketFn): void;
   on(event: "disconnect", handler: SocketFn): void;
@@ -43,17 +54,12 @@ export class Socket implements SocketFns {
         break;
     }
   }
+
+  connect(): void {
+
+  }
+
+  disconnect(): void {
+    
+  }
 }
-
-let socket = new Socket();
-socket.on("data", (data) => {
-  const str: string = data + "Hello";
-})
-
-socket.on("connect", () => {
-
-})
-
-socket.on("error", (err) => {
-  const msg: string = err.message;
-});
